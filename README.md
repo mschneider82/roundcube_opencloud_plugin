@@ -7,6 +7,8 @@ This is a fork of [nicofrand/Roundav](https://github.com/nicofrand/Roundav), whi
 **Packagist:** https://packagist.org/packages/mschneider82/roundcube-opencloud
 **Repository:** https://github.com/mschneider82/roundcube_opencloud_plugin
 
+> **Related:** [opencloud-webmail](https://github.com/mschneider82/opencloud-webmail) — OpenCloud web extension that embeds Roundcube directly inside the OpenCloud UI via iframe with HMAC autologin.
+
 ## Features
 
 - Save email attachments to your personal OpenCloud Space
