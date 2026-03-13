@@ -4,7 +4,7 @@ use Sabre\DAV\Client;
 use League\Flysystem\Filesystem;
 use League\FlySystem\StorageAttributes;
 use League\Flysystem\WebDAV\WebDAVAdapter;
-class roundcube_opencloud_plugin_files_engine
+class roundcube_opencloud_files_engine
 {
     /**
      * @var roundav
@@ -36,10 +36,10 @@ class roundcube_opencloud_plugin_files_engine
         $password = $plugin->rc->config->get('driver_webdav_password');
 
         if (empty($userName)) {
-            $userName = $plugin->rc->config->get('roundcube_opencloud_plugin_webdav_username');
+            $userName = $plugin->rc->config->get('roundcube_opencloud_webdav_username');
         }
         if (empty($password)) {
-            $encryptedPassword = $plugin->rc->config->get('roundcube_opencloud_plugin_webdav_password');
+            $encryptedPassword = $plugin->rc->config->get('roundcube_opencloud_webdav_password');
             if (!empty($encryptedPassword)) {
                 $password = $plugin->rc->decrypt($encryptedPassword);
             }
@@ -54,7 +54,7 @@ class roundcube_opencloud_plugin_files_engine
         }
 
         // Resolve spaces URL: per-user preference takes precedence over global config
-        $spacesUrl = $plugin->rc->config->get('roundcube_opencloud_plugin_webdav_spaces_url');
+        $spacesUrl = $plugin->rc->config->get('roundcube_opencloud_webdav_spaces_url');
         if (empty($spacesUrl)) {
             $spacesUrl = $plugin->rc->config->get('driver_webdav_spaces_url');
         }
@@ -96,8 +96,8 @@ class roundcube_opencloud_plugin_files_engine
         }
 
         // Per-user credentials from preferences
-        if (!empty($plugin->rc->config->get('roundcube_opencloud_plugin_webdav_username'))
-            && !empty($plugin->rc->config->get('roundcube_opencloud_plugin_webdav_password'))) {
+        if (!empty($plugin->rc->config->get('roundcube_opencloud_webdav_username'))
+            && !empty($plugin->rc->config->get('roundcube_opencloud_webdav_password'))) {
             return true;
         }
 
@@ -125,11 +125,11 @@ class roundcube_opencloud_plugin_files_engine
                         'id'         => 'saveas',
                         'name'       => 'saveas',
                         'type'       => 'link',
-                        'onclick'    => 'roundcube_opencloud_plugin_directory_selector_dialog()',
+                        'onclick'    => 'roundcube_opencloud_directory_selector_dialog()',
                         'class'      => 'button buttonPas saveas',
                         'classact'   => 'button saveas',
-                        'label'      => 'roundcube_opencloud_plugin.save',
-                        'title'      => 'roundcube_opencloud_plugin.saveto',
+                        'label'      => 'roundcube_opencloud.save',
+                        'title'      => 'roundcube_opencloud.saveto',
                         ), 'toolbar');
                 }
                 else {
@@ -143,7 +143,7 @@ class roundcube_opencloud_plugin_files_engine
                         'class'      => 'icon active saveas',
                         'classact'   => 'icon active saveas',
                         'innerclass' => 'icon active saveas',
-                        'label'      => 'roundcube_opencloud_plugin.saveto',
+                        'label'      => 'roundcube_opencloud.saveto',
                         ), 'attachmentmenu');
                 }
             }
@@ -155,18 +155,18 @@ class roundcube_opencloud_plugin_files_engine
                 'refreshfolderslist'
             );
         }
-        else if ($plugin->rc->task == 'roundcube_opencloud_plugin' && $plugin->rc->config->get('show_drive_task', true)) {
+        else if ($plugin->rc->task == 'roundcube_opencloud' && $plugin->rc->config->get('show_drive_task', true)) {
             $template = 'files';
         }
 
         // add taskbar button
         if (empty($_REQUEST['framed']) && $plugin->rc->config->get('show_drive_task', true)) {
             $plugin->add_button(array(
-                'command'    => 'roundcube_opencloud_plugin',
+                'command'    => 'roundcube_opencloud',
                 'class'      => 'button-files',
                 'classsel'   => 'button-files button-selected',
                 'innerclass' => 'button-inner',
-                'label'      => 'roundcube_opencloud_plugin.files',
+                'label'      => 'roundcube_opencloud.files',
                 ), 'taskbar');
         }
 
@@ -174,7 +174,7 @@ class roundcube_opencloud_plugin_files_engine
 
         if (!empty($template)) {
             $plugin->include_script('file_api.js');
-            $plugin->include_script('roundcube_opencloud_plugin.js');
+            $plugin->include_script('roundcube_opencloud.js');
 
             // register template objects for dialogs (and main interface)
             $plugin->rc->output->add_handlers(array(
@@ -188,10 +188,10 @@ class roundcube_opencloud_plugin_files_engine
                 'filequotadisplay'   => array($this, 'quota_display'),
             ));
 
-            if ($plugin->rc->task != 'roundcube_opencloud_plugin') {
+            if ($plugin->rc->task != 'roundcube_opencloud') {
                 // add dialog content at the end of page body
                 $plugin->rc->output->add_footer(
-                    $plugin->rc->output->parse('roundcube_opencloud_plugin.' . $template, false, false));
+                    $plugin->rc->output->parse('roundcube_opencloud.' . $template, false, false));
             }
         }
     }
@@ -414,10 +414,10 @@ class roundcube_opencloud_plugin_files_engine
     {
         // define list of cols to be displayed based on parameter or config
         if (empty($attrib['columns'])) {
-            $list_cols     = $this->plugin->rc->config->get('roundcube_opencloud_plugin_list_cols');
+            $list_cols     = $this->plugin->rc->config->get('roundcube_opencloud_list_cols');
             $dont_override = $this->plugin->rc->config->get('dont_override');
             $a_show_cols = is_array($list_cols) ? $list_cols : array('name');
-            $this->plugin->rc->output->set_env('col_movable', !in_array('roundcube_opencloud_plugin_list_cols', (array)$dont_override));
+            $this->plugin->rc->output->set_env('col_movable', !in_array('roundcube_opencloud_list_cols', (array)$dont_override));
         }
         else {
             $a_show_cols = preg_split('/[\s,;]+/', strip_quotes($attrib['columns']));
@@ -434,25 +434,25 @@ class roundcube_opencloud_plugin_files_engine
         $attrib['columns'] = $a_show_cols;
 
         // save some variables for use in ajax list
-        $_SESSION['roundcube_opencloud_plugin_list_attrib'] = $attrib;
+        $_SESSION['roundcube_opencloud_list_attrib'] = $attrib;
 
         // For list in dialog(s) remove all option-like columns
-        if ($this->plugin->rc->task != 'roundcube_opencloud_plugin') {
+        if ($this->plugin->rc->task != 'roundcube_opencloud') {
             $a_show_cols = array_intersect($a_show_cols, $this->sort_cols);
         }
 
         // set default sort col/order to session
-        if (!isset($_SESSION['roundcube_opencloud_plugin_sort_col']))
-            $_SESSION['roundcube_opencloud_plugin_sort_col'] = $this->plugin->rc->config->get('roundcube_opencloud_plugin_sort_col') ?: 'name';
-        if (!isset($_SESSION['roundcube_opencloud_plugin_sort_order']))
-            $_SESSION['roundcube_opencloud_plugin_sort_order'] = strtoupper($this->plugin->rc->config->get('roundcube_opencloud_plugin_sort_order') ?: 'asc');
+        if (!isset($_SESSION['roundcube_opencloud_sort_col']))
+            $_SESSION['roundcube_opencloud_sort_col'] = $this->plugin->rc->config->get('roundcube_opencloud_sort_col') ?: 'name';
+        if (!isset($_SESSION['roundcube_opencloud_sort_order']))
+            $_SESSION['roundcube_opencloud_sort_order'] = strtoupper($this->plugin->rc->config->get('roundcube_opencloud_sort_order') ?: 'asc');
 
         // set client env
         $this->plugin->rc->output->add_gui_object('filelist', $attrib['id']);
-        $this->plugin->rc->output->set_env('sort_col', $_SESSION['roundcube_opencloud_plugin_sort_col']);
-        $this->plugin->rc->output->set_env('sort_order', $_SESSION['roundcube_opencloud_plugin_sort_order']);
+        $this->plugin->rc->output->set_env('sort_col', $_SESSION['roundcube_opencloud_sort_col']);
+        $this->plugin->rc->output->set_env('sort_order', $_SESSION['roundcube_opencloud_sort_order']);
         $this->plugin->rc->output->set_env('coltypes', $a_show_cols);
-        $this->plugin->rc->output->set_env('search_threads', $this->plugin->rc->config->get('roundcube_opencloud_plugin_search_threads'));
+        $this->plugin->rc->output->set_env('search_threads', $this->plugin->rc->config->get('roundcube_opencloud_search_threads'));
 
         $this->plugin->rc->output->include_script('list.js');
 
@@ -477,8 +477,8 @@ class roundcube_opencloud_plugin_files_engine
         $skin_path = $this->plugin->local_skin_path();
 
         // check to see if we have some settings for sorting
-        $sort_col   = $_SESSION['roundcube_opencloud_plugin_sort_col'];
-        $sort_order = $_SESSION['roundcube_opencloud_plugin_sort_order'];
+        $sort_col   = $_SESSION['roundcube_opencloud_sort_col'];
+        $sort_order = $_SESSION['roundcube_opencloud_sort_order'];
 
         $dont_override  = (array)$this->plugin->rc->config->get('dont_override');
         $disabled_sort  = in_array('message_sort_col', $dont_override);
@@ -552,11 +552,11 @@ class roundcube_opencloud_plugin_files_engine
      */
     protected function file_list_update($prefs)
     {
-        $attrib = $_SESSION['roundcube_opencloud_plugin_list_attrib'];
+        $attrib = $_SESSION['roundcube_opencloud_list_attrib'];
 
-        if (!empty($prefs['roundcube_opencloud_plugin_list_cols'])) {
-            $attrib['columns'] = $prefs['roundcube_opencloud_plugin_list_cols'];
-            $_SESSION['roundcube_opencloud_plugin_list_attrib'] = $attrib;
+        if (!empty($prefs['roundcube_opencloud_list_cols'])) {
+            $attrib['columns'] = $prefs['roundcube_opencloud_list_cols'];
+            $_SESSION['roundcube_opencloud_list_attrib'] = $attrib;
         }
 
         $a_show_cols = $attrib['columns'];
@@ -615,13 +615,13 @@ class roundcube_opencloud_plugin_files_engine
             return $frame;
         }
 
-        $href = $this->plugin->rc->url(array('task' => 'roundcube_opencloud_plugin', 'action' => 'file_api')) . '&method=file_get&file='. urlencode($this->file_data['filename']);
+        $href = $this->plugin->rc->url(array('task' => 'roundcube_opencloud', 'action' => 'file_api')) . '&method=file_get&file='. urlencode($this->file_data['filename']);
 
         $this->plugin->rc->output->add_gui_object('preview_frame', $attrib['id']);
 
         $attrib['allowfullscreen'] = true;
         $attrib['src']             = $href;
-        $attrib['onload']          = 'roundcube_opencloud_plugin_frame_load(this)';
+        $attrib['onload']          = 'roundcube_opencloud_frame_load(this)';
 
         return html::iframe($attrib);
     }
@@ -670,11 +670,11 @@ class roundcube_opencloud_plugin_files_engine
         $plugin->add_label('uploadprogress', 'GB', 'MB', 'KB', 'B');
         $plugin->rc->output->set_pagetitle($plugin->gettext('files'));
         $plugin->rc->output->set_env('file_mimetypes', $this->get_mimetypes());
-        $plugin->rc->output->set_env('files_quota', $_SESSION['roundcube_opencloud_plugin_caps']['QUOTA']);
-        $plugin->rc->output->set_env('files_max_upload', $_SESSION['roundcube_opencloud_plugin_caps']['MAX_UPLOAD']);
-        $plugin->rc->output->set_env('files_progress_name', $_SESSION['roundcube_opencloud_plugin_caps']['PROGRESS_NAME']);
-        $plugin->rc->output->set_env('files_progress_time', $_SESSION['roundcube_opencloud_plugin_caps']['PROGRESS_TIME']);
-        $plugin->rc->output->send('roundcube_opencloud_plugin.files');
+        $plugin->rc->output->set_env('files_quota', $_SESSION['roundcube_opencloud_caps']['QUOTA']);
+        $plugin->rc->output->set_env('files_max_upload', $_SESSION['roundcube_opencloud_caps']['MAX_UPLOAD']);
+        $plugin->rc->output->set_env('files_progress_name', $_SESSION['roundcube_opencloud_caps']['PROGRESS_NAME']);
+        $plugin->rc->output->set_env('files_progress_time', $_SESSION['roundcube_opencloud_caps']['PROGRESS_TIME']);
+        $plugin->rc->output->send('roundcube_opencloud.files');
     }
 
     /**
@@ -687,9 +687,9 @@ class roundcube_opencloud_plugin_files_engine
         $dont_override = (array) $plugin->rc->config->get('dont_override');
         $prefs = array();
         $opts  = array(
-            'roundcube_opencloud_plugin_sort_col' => true,
-            'roundcube_opencloud_plugin_sort_order' => true,
-            'roundcube_opencloud_plugin_list_cols' => false,
+            'roundcube_opencloud_sort_col' => true,
+            'roundcube_opencloud_sort_order' => true,
+            'roundcube_opencloud_list_cols' => false,
         );
 
         foreach ($opts as $o => $sess) {
@@ -699,7 +699,7 @@ class roundcube_opencloud_plugin_files_engine
                     $_SESSION[$o] = $prefs[$o];
                 }
 
-                if ($o == 'roundcube_opencloud_plugin_list_cols') {
+                if ($o == 'roundcube_opencloud_list_cols') {
                     $update_list = true;
                 }
             }
@@ -755,7 +755,7 @@ class roundcube_opencloud_plugin_files_engine
         $plugin->rc->output->set_env('file', $file);
         $plugin->rc->output->set_env('file_data', $this->file_data);
         $plugin->rc->output->set_pagetitle(rcube::Q($file));
-        $plugin->rc->output->send('roundcube_opencloud_plugin.filepreview');
+        $plugin->rc->output->send('roundcube_opencloud.filepreview');
     }
 
     /**

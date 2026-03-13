@@ -27,11 +27,11 @@
  */
 
 require_once(__DIR__.'/vendor/autoload.php');
-require_once(__DIR__.'/lib/roundcube_opencloud_plugin_files_engine.php');
+require_once(__DIR__.'/lib/roundcube_opencloud_files_engine.php');
 
-class roundcube_opencloud_plugin extends rcube_plugin
+class roundcube_opencloud extends rcube_plugin
 {
-    public const SESSION_FOLDERS_LIST_ID = 'roundcube_opencloud_plugin_folders_list';
+    public const SESSION_FOLDERS_LIST_ID = 'roundcube_opencloud_folders_list';
 
     // All tasks excluding 'login' and 'logout'
     public $task = '?(?!login|logout).*';
@@ -51,7 +51,7 @@ class roundcube_opencloud_plugin extends rcube_plugin
 
         $this->register_action('plugin.roundav', array($this, 'actions'));
 
-        $this->register_task('roundcube_opencloud_plugin');
+        $this->register_task('roundcube_opencloud');
 
         $this->register_action('index', array($this, 'actions'));
         $this->register_action('prefs', array($this, 'actions'));
@@ -70,8 +70,8 @@ class roundcube_opencloud_plugin extends rcube_plugin
     public function refresh($args = null)
     {
         $this->load_config();
-        if (!$this->engine && roundcube_opencloud_plugin_files_engine::hasCredentials($this)) {
-            $this->engine = new roundcube_opencloud_plugin_files_engine($this);
+        if (!$this->engine && roundcube_opencloud_files_engine::hasCredentials($this)) {
+            $this->engine = new roundcube_opencloud_files_engine($this);
         }
 
         return $args;
@@ -116,13 +116,13 @@ class roundcube_opencloud_plugin extends rcube_plugin
             $rcTask = $rc->task;
             $rcAction = $rc->action;
 
-            if ($rcTask == 'roundcube_opencloud_plugin' && $rcAction == 'file_api') {
+            if ($rcTask == 'roundcube_opencloud' && $rcAction == 'file_api') {
                 $action = rcube_utils::get_input_value('method', rcube_utils::INPUT_GPC);
             }
-            else if ($rcTask == 'roundcube_opencloud_plugin' && $rcAction) {
+            else if ($rcTask == 'roundcube_opencloud' && $rcAction) {
                 $action = $rcAction;
             }
-            else if ($rcTask != 'roundcube_opencloud_plugin' && $_POST['act']) {
+            else if ($rcTask != 'roundcube_opencloud' && $_POST['act']) {
                 $action = $_POST['act'];
             }
             else {
@@ -193,8 +193,8 @@ class roundcube_opencloud_plugin extends rcube_plugin
     {
         $this->add_texts('localization/');
 
-        $args['list']['roundcube_opencloud_plugin'] = array(
-            'id'      => 'roundcube_opencloud_plugin',
+        $args['list']['roundcube_opencloud'] = array(
+            'id'      => 'roundcube_opencloud',
             'section' => $this->gettext('settings_section'),
         );
 
@@ -206,16 +206,16 @@ class roundcube_opencloud_plugin extends rcube_plugin
      */
     public function preferences_list($args)
     {
-        if ($args['section'] != 'roundcube_opencloud_plugin') {
+        if ($args['section'] != 'roundcube_opencloud') {
             return $args;
         }
 
         $this->add_texts('localization/');
 
-        $username = $this->rc->config->get('roundcube_opencloud_plugin_webdav_username', '');
-        $password_encrypted = $this->rc->config->get('roundcube_opencloud_plugin_webdav_password', '');
+        $username = $this->rc->config->get('roundcube_opencloud_webdav_username', '');
+        $password_encrypted = $this->rc->config->get('roundcube_opencloud_webdav_password', '');
         $password = !empty($password_encrypted) ? $this->rc->decrypt($password_encrypted) : '';
-        $spaces_url = $this->rc->config->get('roundcube_opencloud_plugin_webdav_spaces_url', '');
+        $spaces_url = $this->rc->config->get('roundcube_opencloud_webdav_spaces_url', '');
 
         $args['blocks']['main'] = array(
             'name'    => $this->gettext('settings_section'),
@@ -230,8 +230,8 @@ class roundcube_opencloud_plugin extends rcube_plugin
 
         // Username field
         $input_username = new html_inputfield(array(
-            'name'  => 'roundcube_opencloud_plugin_webdav_username',
-            'id'    => 'roundcube_opencloud_plugin_webdav_username',
+            'name'  => 'roundcube_opencloud_webdav_username',
+            'id'    => 'roundcube_opencloud_webdav_username',
             'size'  => 40,
             'autocomplete' => 'off',
         ));
@@ -243,8 +243,8 @@ class roundcube_opencloud_plugin extends rcube_plugin
 
         // Password field
         $input_password = new html_passwordfield(array(
-            'name'  => 'roundcube_opencloud_plugin_webdav_password',
-            'id'    => 'roundcube_opencloud_plugin_webdav_password',
+            'name'  => 'roundcube_opencloud_webdav_password',
+            'id'    => 'roundcube_opencloud_webdav_password',
             'size'  => 40,
             'autocomplete' => 'off',
         ));
@@ -256,8 +256,8 @@ class roundcube_opencloud_plugin extends rcube_plugin
 
         // Spaces URL field
         $input_spaces_url = new html_inputfield(array(
-            'name'  => 'roundcube_opencloud_plugin_webdav_spaces_url',
-            'id'    => 'roundcube_opencloud_plugin_webdav_spaces_url',
+            'name'  => 'roundcube_opencloud_webdav_spaces_url',
+            'id'    => 'roundcube_opencloud_webdav_spaces_url',
             'size'  => 60,
             'autocomplete' => 'off',
         ));
@@ -275,22 +275,22 @@ class roundcube_opencloud_plugin extends rcube_plugin
      */
     public function preferences_save($args)
     {
-        if ($args['section'] != 'roundcube_opencloud_plugin') {
+        if ($args['section'] != 'roundcube_opencloud') {
             return $args;
         }
 
         $this->add_texts('localization/');
 
-        $args['prefs']['roundcube_opencloud_plugin_webdav_username'] = rcube_utils::get_input_value('roundcube_opencloud_plugin_webdav_username', rcube_utils::INPUT_POST);
+        $args['prefs']['roundcube_opencloud_webdav_username'] = rcube_utils::get_input_value('roundcube_opencloud_webdav_username', rcube_utils::INPUT_POST);
 
-        $password = rcube_utils::get_input_value('roundcube_opencloud_plugin_webdav_password', rcube_utils::INPUT_POST, true);
+        $password = rcube_utils::get_input_value('roundcube_opencloud_webdav_password', rcube_utils::INPUT_POST, true);
         if (!empty($password)) {
-            $args['prefs']['roundcube_opencloud_plugin_webdav_password'] = $this->rc->encrypt($password);
+            $args['prefs']['roundcube_opencloud_webdav_password'] = $this->rc->encrypt($password);
         } else {
-            $args['prefs']['roundcube_opencloud_plugin_webdav_password'] = '';
+            $args['prefs']['roundcube_opencloud_webdav_password'] = '';
         }
 
-        $args['prefs']['roundcube_opencloud_plugin_webdav_spaces_url'] = rcube_utils::get_input_value('roundcube_opencloud_plugin_webdav_spaces_url', rcube_utils::INPUT_POST);
+        $args['prefs']['roundcube_opencloud_webdav_spaces_url'] = rcube_utils::get_input_value('roundcube_opencloud_webdav_spaces_url', rcube_utils::INPUT_POST);
 
         return $args;
     }

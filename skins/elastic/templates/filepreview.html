@@ -11,25 +11,25 @@
 
 <div id="mainscreen">
 
-<h1 class="voice"><roundcube:label name="roundcube_opencloud_plugin.filepreview" /></h1>
+<h1 class="voice"><roundcube:label name="roundcube_opencloud.filepreview" /></h1>
 
 <h2 id="aria-label-toolbar" class="voice"><roundcube:label name="arialabeltoolbar" /></h2>
 <div id="filestoolbar" class="toolbar" role="toolbar" aria-labelledby="aria-label-toolbar">
-    <roundcube:button command="files-get" type="link" class="button get disabled" classAct="button get" classSel="button get pressed" label="roundcube_opencloud_plugin.get" title="roundcube_opencloud_plugin.getfile" />
-    <roundcube:button command="files-edit" type="link" class="button edit disabled" classAct="button edit" classSel="button edit pressed" label="roundcube_opencloud_plugin.edit" title="roundcube_opencloud_plugin.editfile" />
-    <roundcube:button command="files-save" type="link" class="button save disabled" classAct="button save" classSel="button save pressed" label="roundcube_opencloud_plugin.save" title="roundcube_opencloud_plugin.savefile" style="display:none" />
-    <roundcube:button command="files-delete" type="link" class="button delete disabled" classAct="button delete" classSel="button delete pressed" label="delete" title="roundcube_opencloud_plugin.deletefile" />
-    <roundcube:button command="files-print" type="link" class="button print disabled" classAct="button print" classSel="button print pressed" label="print" title="roundcube_opencloud_plugin.printfile" />
+    <roundcube:button command="files-get" type="link" class="button get disabled" classAct="button get" classSel="button get pressed" label="roundcube_opencloud.get" title="roundcube_opencloud.getfile" />
+    <roundcube:button command="files-edit" type="link" class="button edit disabled" classAct="button edit" classSel="button edit pressed" label="roundcube_opencloud.edit" title="roundcube_opencloud.editfile" />
+    <roundcube:button command="files-save" type="link" class="button save disabled" classAct="button save" classSel="button save pressed" label="roundcube_opencloud.save" title="roundcube_opencloud.savefile" style="display:none" />
+    <roundcube:button command="files-delete" type="link" class="button delete disabled" classAct="button delete" classSel="button delete pressed" label="delete" title="roundcube_opencloud.deletefile" />
+    <roundcube:button command="files-print" type="link" class="button print disabled" classAct="button print" classSel="button print pressed" label="print" title="roundcube_opencloud.printfile" />
 </div>
 
-<h2 id="aria-label-fileprops" class="voice"><roundcube:label name="roundcube_opencloud_plugin.arialabelfileprops" /></h2>
+<h2 id="aria-label-fileprops" class="voice"><roundcube:label name="roundcube_opencloud.arialabelfileprops" /></h2>
 <div id="fileinfobox" class="uibox listbox" aria-labelledby="aria-label-toolbar">
     <roundcube:object name="fileinfobox" id="fileinfo" class="listing" />
 </div>
 
 <div id="filecontent" class="uibox">
     <div class="iframebox">
-        <roundcube:object name="filepreviewframe" id="fileframe" frameborder="0" title="roundcube_opencloud_plugin.arialabelfilecontent" />
+        <roundcube:object name="filepreviewframe" id="fileframe" frameborder="0" title="roundcube_opencloud.arialabelfilecontent" />
     </div>
 </div>
 
@@ -37,7 +37,7 @@
 
 <roundcube:include file="/includes/footer.html" />
 <script type="text/javascript">
-roundcube_opencloud_plugin_ui_init();
+roundcube_opencloud_ui_init();
 </script>
 
 </body>
