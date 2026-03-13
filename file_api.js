@@ -78,7 +78,7 @@ function files_api()
 
         return $.ajax({
             type: 'POST',
-            url: rcmail.url('roundav/file_api'),
+            url: rcmail.url('roundcube_opencloud/file_api'),
             data: data,
             dataType: 'json',
             success: function (response) { ref[func](response); },
@@ -98,7 +98,7 @@ function files_api()
 
         return $.ajax({
             type: 'GET',
-            url: rcmail.url('roundav/file_api'),
+            url: rcmail.url('roundcube_opencloud/file_api'),
             data: data,
             dataType: 'json',
             success: function (response) { ref[func](response); },

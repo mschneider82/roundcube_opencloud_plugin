@@ -212,7 +212,7 @@ function roundcube_opencloud_directory_selector_dialog(id)
             request.name = input.val();
         }
 
-        rcmail.http_post('plugin.roundav', request, lock);
+        rcmail.http_post('plugin.roundcube_opencloud', request, lock);
         roundcube_opencloud_dialog_close(this);
     };
 
@@ -281,7 +281,7 @@ function roundcube_opencloud_selector_dialog()
             });
 
             // send request
-            rcmail.http_post('plugin.roundav', {
+            rcmail.http_post('plugin.roundcube_opencloud', {
                 act: 'attach_file',
                 files: list,
                 id: rcmail.env.compose_id,
@@ -1593,7 +1593,7 @@ function roundcube_opencloud_ui()
     {
         if (!params) { params = {}; }
 
-        rcmail.redirect(rcmail.url('roundav/file_api') + '&method=file_get&file=' + file);
+        rcmail.redirect(rcmail.url('roundcube_opencloud/file_api') + '&method=file_get&file=' + file);
     };
 
     // file(s) delete request

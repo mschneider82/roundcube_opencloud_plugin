@@ -53,7 +53,7 @@ class roundcube_opencloud extends rcube_plugin
 
         $this->add_hook('refresh', array($this, 'refresh'));
 
-        $this->register_action('plugin.roundav', array($this, 'actions'));
+        $this->register_action('plugin.roundcube_opencloud', array($this, 'actions'));
 
         $this->register_task('roundcube_opencloud');
 
