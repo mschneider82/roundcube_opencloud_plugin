@@ -8,6 +8,8 @@ This is a fork of [nicofrand/Roundav](https://github.com/nicofrand/Roundav), whi
 **Repository:** https://github.com/mschneider82/roundcube_opencloud_plugin
 
 > **Related:** [opencloud-webmail](https://github.com/mschneider82/opencloud-webmail) — OpenCloud web extension that embeds Roundcube directly inside the OpenCloud UI via iframe with HMAC autologin.
+>
+> **Article:** [From Seafile to OpenCloud: Building a Self-Hosted Webmail & Cloud Integration on Kubernetes](https://medium.com/@matthias2handy/from-seafile-to-opencloud-building-a-self-hosted-webmail-cloud-integration-on-kubernetes-a4f3bb795d6f) — background, motivation, and full setup walkthrough.
 
 ## Features
 
