@@ -4,7 +4,8 @@ A Roundcube plugin that lets each user connect their personal [OpenCloud](https:
 
 This is a fork of [nicofrand/Roundav](https://github.com/nicofrand/Roundav), which itself is a fork of [Roundcube-Plugin-roundav](https://github.com/messagerie-melanie2/Roundcube-Plugin-roundav).
 
-**Repository:** https://github.com/mschneider82/roundcube-opencloud-plugin
+**Packagist:** https://packagist.org/packages/mschneider82/roundcube-opencloud
+**Repository:** https://github.com/mschneider82/roundcube_opencloud_plugin
 
 ## Features
 
@@ -19,19 +20,38 @@ This is a fork of [nicofrand/Roundav](https://github.com/nicofrand/Roundav), whi
 - PHP 8.1+
 - An [OpenCloud](https://opencloud.eu) instance
 
-## Install
+## Installation
 
-1. Place this plugin folder into the `plugins/` directory of Roundcube and rename it to `roundcube_opencloud_plugin`.
+### Docker (roundcube/roundcubemail image)
+
+Set these environment variables:
+
+```env
+ROUNDCUBEMAIL_PLUGINS=archive,zipdownload,roundcube_opencloud
+ROUNDCUBEMAIL_COMPOSER_PLUGINS=mschneider82/roundcube-opencloud
+ROUNDCUBEMAIL_INSTALL_PLUGINS=1
+```
+
+### Composer
+
+```bash
+composer require mschneider82/roundcube-opencloud
+```
+
+Then add `roundcube_opencloud` to `$config['plugins']` in your Roundcube config.
+
+### Manual
+
+1. Place this plugin folder into the `plugins/` directory of Roundcube and rename it to `roundcube_opencloud`.
 2. Run `composer install --no-dev` inside the plugin folder.
-3. Add `roundcube_opencloud_plugin` to `$config['plugins']` in your Roundcube config.
-4. Optionally edit `config.inc.php` to override global defaults (all settings are optional — users configure their own credentials in Settings).
+3. Add `roundcube_opencloud` to `$config['plugins']` in your Roundcube config.
 
 ## Configuration
 
-Copy `config.inc.php.dist` to `config.inc.php`. The defaults work out of the box for a per-user setup. Optional global overrides:
+The plugin works out of the box — all settings are optional. To override global defaults, edit `config.inc.php`:
 
 ```php
-// Show the "Files" tab in the taskbar
+// Show the "Files" tab in the taskbar (default: true)
 $rcmail_config['show_drive_task'] = true;
 
 // Optional: set a global fallback Spaces URL (users can override this in their settings)
