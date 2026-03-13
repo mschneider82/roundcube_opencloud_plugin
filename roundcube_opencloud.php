@@ -78,6 +78,15 @@ class roundcube_opencloud extends rcube_plugin
             $this->engine = new roundcube_opencloud_files_engine($this);
         }
 
+        // Invalidate folder cache if the user's spaces URL has changed (e.g. different user logged in)
+        $spacesUrl = $this->rc->config->get('roundcube_opencloud_webdav_spaces_url')
+            ?: $this->rc->config->get('driver_webdav_spaces_url');
+        $cacheKey = md5($this->rc->user->get_username() . $spacesUrl);
+        if (($_SESSION['roundcube_opencloud_cache_key'] ?? null) !== $cacheKey) {
+            unset($_SESSION[self::SESSION_FOLDERS_LIST_ID]);
+            $_SESSION['roundcube_opencloud_cache_key'] = $cacheKey;
+        }
+
         return $args;
     }
 
