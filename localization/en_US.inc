@@ -78,4 +78,12 @@ $labels['arialabelfileprops'] = 'File properties';
 $labels['arialabelfilecontent'] = 'File content';
 
 $labels['refreshfolderslist'] = 'Refresh folders list';
+
+$labels['settings_section'] = 'Cloud Storage';
+$labels['settings_username'] = 'Username';
+$labels['settings_password'] = 'App Password';
+$labels['settings_spaces_url'] = 'Spaces WebDAV URL';
+$labels['settings_info'] = 'OpenCloud credentials: Create an app password under OpenCloud → Settings → Security and enter it as the password here. To find your Spaces WebDAV URL, enable "Show WebDAV information in the detail view" in OpenCloud Settings, then open the folder properties of your desired Space.';
+$labels['settings_saved'] = 'Cloud storage settings saved.';
+$labels['no_credentials'] = 'Please configure your cloud storage credentials in Settings.';
 ?>

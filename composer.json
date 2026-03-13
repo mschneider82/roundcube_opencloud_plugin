@@ -1,12 +1,24 @@
 {
-    "name": "nicofrand/roundav",
-    "description": "Roundcube plugin allowing to save attachments to a WebDAV server & insert attachments from it",
+    "name": "mschneider82/roundcube-opencloud",
+    "description": "Roundcube plugin to connect each user's personal OpenCloud Space — save attachments to the cloud or attach files from it",
     "type": "roundcube-plugin",
     "license": "AGPL-3.0-or-later",
-    "version": "1.0.0",
+    "authors": [
+        {
+            "name": "Matthias Schneider",
+            "email": "ms@wck.biz"
+        }
+    ],
     "require": {
+        "php": ">=8.1",
+        "roundcube/plugin-installer": ">=0.3.0",
         "sabre/dav": "^4.6",
         "league/flysystem": "^3.0",
         "league/flysystem-webdav": "^3.29"
+    },
+    "extra": {
+        "roundcube": {
+            "min-version": "1.6.0"
+        }
     }
 }

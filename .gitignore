@@ -2,4 +2,4 @@
 /.buildpath
 /.project
 /vendor
-/config.inc.php
+/debug_creds.php

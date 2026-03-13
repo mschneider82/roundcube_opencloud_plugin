@@ -1,4 +1,4 @@
-function roundav_ui_init()
+function roundcube_opencloud_plugin_ui_init()
 {
     if (rcmail.env.action == 'open') {
         var filesviewsplit = new rcube_splitter({
@@ -12,7 +12,7 @@ function roundav_ui_init()
             size: 12,
         }).init();
 
-        rcmail.addEventListener('enable-command', roundav_enable_command);
+        rcmail.addEventListener('enable-command', roundcube_opencloud_plugin_enable_command);
     }
     else { var filesviewsplit = new rcube_splitter({
         id: 'filesviewsplitter',
@@ -26,10 +26,10 @@ function roundav_ui_init()
     }).init(); }
 
     $(document).ready(function () {
-        rcmail.addEventListener('menu-open', roundav_show_listoptions);
-        rcmail.addEventListener('menu-save', roundav_save_listoptions);
-        rcmail.addEventListener('menu-close', roundav_show_listoptions);
-        rcmail.addEventListener('setquota', roundav_update_quota);
+        rcmail.addEventListener('menu-open', roundcube_opencloud_plugin_show_listoptions);
+        rcmail.addEventListener('menu-save', roundcube_opencloud_plugin_save_listoptions);
+        rcmail.addEventListener('menu-close', roundcube_opencloud_plugin_show_listoptions);
+        rcmail.addEventListener('setquota', roundcube_opencloud_plugin_update_quota);
 
         var menu = $('#dragfilemenu');
         if (menu.length) {
@@ -43,10 +43,10 @@ function roundav_ui_init()
         }
     });
 
-    roundav_upload_input('#filestoolbar a.upload');
+    roundcube_opencloud_plugin_upload_input('#filestoolbar a.upload');
 }
 
-function roundav_enable_command(p)
+function roundcube_opencloud_plugin_enable_command(p)
 {
     if (p.command == 'files-save') {
         var toolbar = $('#filestoolbar');
@@ -55,12 +55,12 @@ function roundav_enable_command(p)
     }
 }
 
-function roundav_update_quota(p)
+function roundcube_opencloud_plugin_update_quota(p)
 {
     return UI.update_quota(p);
 }
 
-function roundav_show_listoptions(p)
+function roundcube_opencloud_plugin_show_listoptions(p)
 {
     if (!p || p.name != 'filelistmenu') {
         return;
@@ -95,7 +95,7 @@ function roundav_show_listoptions(p)
     }).show();
 }
 
-function roundav_save_listoptions()
+function roundcube_opencloud_plugin_save_listoptions()
 {
     $('#listoptions').dialog('close');
 
@@ -104,5 +104,5 @@ function roundav_save_listoptions()
         cols = $('input[name="list_col[]"]:checked')
             .map(function () { return this.value; }).get();
 
-    roundav_set_list_options(cols, sort, ord);
+    roundcube_opencloud_plugin_set_list_options(cols, sort, ord);
 }

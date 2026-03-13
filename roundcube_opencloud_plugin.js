@@ -32,8 +32,8 @@ window.rcmail && window.files_api && rcmail.addEventListener('init', function ()
         if (rcmail.env.action == 'compose') {
             var elem = $('#compose-attachments > div');
             var input = $(`<button class="btn btn-secondary attach cloud" type="button" tabindex="${$('button', elem).attr('tabindex') || 0}">
-                ${rcmail.gettext('roundav.fromcloud')}
-            </button>`).click(function () { roundav_selector_dialog(); });
+                ${rcmail.gettext('roundcube_opencloud_plugin.fromcloud')}
+            </button>`).click(function () { roundcube_opencloud_plugin_selector_dialog(); });
             elem.append('<br />', input);
 
             if (rcmail.gui_objects.filelist) {
@@ -43,13 +43,13 @@ window.rcmail && window.files_api && rcmail.addEventListener('init', function ()
                     column_movable: false,
                     dblclick_time: rcmail.dblclick_time,
                 });
-                rcmail.file_list.addEventListener('select', function (o) { roundav_list_select(o); })
+                rcmail.file_list.addEventListener('select', function (o) { roundcube_opencloud_plugin_list_select(o); })
                     .addEventListener('listupdate', function (e) { rcmail.triggerEvent('listupdate', e); });
 
                 rcmail.enable_command('files-sort', 'files-search', 'files-search-reset', true);
 
                 rcmail.file_list.init();
-                roundav_list_coltypes();
+                roundcube_opencloud_plugin_list_coltypes();
             }
 
             // register some commands to skip warning message on compose page
@@ -60,12 +60,12 @@ window.rcmail && window.files_api && rcmail.addEventListener('init', function ()
             var header_links = $('#message-header .header-links');
             if (header_links.length) {
                 header_links.append(
-                    $(`<a href="#" class="button filesaveall">${rcmail.gettext('roundav.saveall')}</a>`)
-                        .on('click', function () { roundav_directory_selector_dialog(); })
+                    $(`<a href="#" class="button filesaveall">${rcmail.gettext('roundcube_opencloud_plugin.saveall')}</a>`)
+                        .on('click', function () { roundcube_opencloud_plugin_directory_selector_dialog(); })
                 );
             }
 
-            rcmail.addEventListener('menu-open', roundav_attach_menu_open);
+            rcmail.addEventListener('menu-open', roundcube_opencloud_plugin_attach_menu_open);
             rcmail.enable_command('folder-create', true);
             rcmail.enable_command('folder-force-reload', true);
         }
@@ -75,9 +75,9 @@ window.rcmail && window.files_api && rcmail.addEventListener('init', function ()
             rcmail.enable_command('folder-force-reload', true);
         }
 
-        roundav_init();
+        roundcube_opencloud_plugin_init();
     }
-    else if (rcmail.task == 'roundav') {
+    else if (rcmail.task == 'roundcube_opencloud_plugin') {
         if (rcmail.gui_objects.filelist) {
             rcmail.file_list = new rcube_list_widget(rcmail.gui_objects.filelist, {
                 multiselect: true,
@@ -87,17 +87,17 @@ window.rcmail && window.files_api && rcmail.addEventListener('init', function ()
                 dblclick_time: rcmail.dblclick_time,
             });
             /*
-            rcmail.file_list.row_init = function(o){ roundav_init_file_row(o); };
+            rcmail.file_list.row_init = function(o){ roundcube_opencloud_plugin_init_file_row(o); };
             rcmail.file_list.addEventListener('click', function(o){ p.msglist_click(o); });
             rcmail.file_list.addEventListener('keypress', function(o){ p.msglist_keypress(o); });
             rcmail.file_list.addEventListener('dragstart', function(o){ p.drag_start(o); });
             rcmail.file_list.addEventListener('dragmove', function(e){ p.drag_move(e); });
             */
-            rcmail.file_list.addEventListener('dblclick', function (o) { roundav_list_dblclick(o); })
-                .addEventListener('select', function (o) { roundav_list_select(o); })
-                .addEventListener('keypress', function (o) { roundav_list_keypress(o); })
-                .addEventListener('dragend', function (e) { roundav_drag_end(e); })
-                .addEventListener('column_replace', function (e) { roundav_set_coltypes(e); })
+            rcmail.file_list.addEventListener('dblclick', function (o) { roundcube_opencloud_plugin_list_dblclick(o); })
+                .addEventListener('select', function (o) { roundcube_opencloud_plugin_list_select(o); })
+                .addEventListener('keypress', function (o) { roundcube_opencloud_plugin_list_keypress(o); })
+                .addEventListener('dragend', function (e) { roundcube_opencloud_plugin_drag_end(e); })
+                .addEventListener('column_replace', function (e) { roundcube_opencloud_plugin_set_coltypes(e); })
                 .addEventListener('listupdate', function (e) { rcmail.triggerEvent('listupdate', e); });
 
             rcmail.enable_command(
@@ -111,8 +111,8 @@ window.rcmail && window.files_api && rcmail.addEventListener('init', function ()
             true);
 
             rcmail.file_list.init();
-            roundav_list_coltypes();
-            roundav_drag_drop_init($(rcmail.gui_objects.filelist).parents('.droptarget'));
+            roundcube_opencloud_plugin_list_coltypes();
+            roundcube_opencloud_plugin_drag_drop_init($(rcmail.gui_objects.filelist).parents('.droptarget'));
         }
 
         // "one file only" commands
@@ -120,7 +120,7 @@ window.rcmail && window.files_api && rcmail.addEventListener('init', function ()
         // "one or more file" commands
         rcmail.env.file_commands_all = ['files-delete', 'files-move', 'files-copy'];
 
-        roundav_init();
+        roundcube_opencloud_plugin_init();
 
         if (rcmail.env.action == 'open') {
             rcmail.enable_command('files-get', 'files-delete', rcmail.env.file);
@@ -139,12 +139,12 @@ window.rcmail && window.files_api && rcmail.addEventListener('init', function ()
 /**********************************************************/
 
 // Initializes API object
-function roundav_init()
+function roundcube_opencloud_plugin_init()
 {
     if (window.file_api) { return; }
 
     // Initialize application object (don't change var name!)
-    file_api = $.extend(new files_api(), new roundav_ui());
+    file_api = $.extend(new files_api(), new roundcube_opencloud_plugin_ui());
 
     file_api.set_env({
         sort_col: 'name',
@@ -159,7 +159,7 @@ function roundav_init()
 
 
 // folder selection dialog
-function roundav_directory_selector_dialog(id)
+function roundcube_opencloud_plugin_directory_selector_dialog(id)
 {
     var dialog = $('#files-dialog');
     var input = $('#file-save-as-input');
@@ -198,7 +198,7 @@ function roundav_directory_selector_dialog(id)
 
     $('#foldercreatelink').attr('tabindex', 0);
 
-    buttons[rcmail.gettext('roundav.save')] = function () {
+    buttons[rcmail.gettext('roundcube_opencloud_plugin.save')] = function () {
         var lock = rcmail.set_busy(true, 'saving');
         var request = {
             act: 'save_file',
@@ -213,11 +213,11 @@ function roundav_directory_selector_dialog(id)
         }
 
         rcmail.http_post('plugin.roundav', request, lock);
-        roundav_dialog_close(this);
+        roundcube_opencloud_plugin_dialog_close(this);
     };
 
-    buttons[rcmail.gettext('roundav.cancel')] = function () {
-        roundav_dialog_close(this);
+    buttons[rcmail.gettext('roundcube_opencloud_plugin.cancel')] = function () {
+        roundcube_opencloud_plugin_dialog_close(this);
     };
 
     if (!rcmail.env.folders_loaded) {
@@ -228,8 +228,8 @@ function roundav_directory_selector_dialog(id)
     }
 
     // show dialog window
-    roundav_dialog_show(dialog, {
-        title: rcmail.gettext('roundav.' + label),
+    roundcube_opencloud_plugin_dialog_show(dialog, {
+        title: rcmail.gettext('roundcube_opencloud_plugin.' + label),
         buttons: buttons,
         button_classes: ['mainaction'],
         minWidth: 300,
@@ -243,31 +243,31 @@ function roundav_directory_selector_dialog(id)
         if (!parent.rcmail.folder_create) {
             parent.rcmail.enable_command('folder-create', true);
             parent.rcmail.folder_create = function () {
-                window.roundav_folder_create_dialog();
+                window.roundcube_opencloud_plugin_folder_create_dialog();
             };
         }
 
         if (!parent.rcmail.folder_force_reload) {
             parent.rcmail.enable_command('folder-force-reload', true);
             parent.rcmail.folder_force_reload = function () {
-                window.roundav_folder_force_reload();
+                window.roundcube_opencloud_plugin_folder_force_reload();
             };
         }
     }
 }
 
 // file selection dialog
-function roundav_selector_dialog()
+function roundcube_opencloud_plugin_selector_dialog()
 {
     var dialog = $('#files-compose-dialog'), buttons = {};
 
-    buttons[rcmail.gettext('roundav.attachsel')] = function () {
+    buttons[rcmail.gettext('roundcube_opencloud_plugin.attachsel')] = function () {
         var list = [];
         $('#filelist tr.selected').each(function () {
             list.push($(this).data('file'));
         });
 
-        roundav_dialog_close(this);
+        roundcube_opencloud_plugin_dialog_close(this);
 
         if (list.length) {
             // Display upload indicator and cancel button
@@ -275,7 +275,7 @@ function roundav_selector_dialog()
 
             rcmail.add2attachment_list(id, {
                 name: '',
-                html: `<span>${rcmail.get_label('roundav.attaching')}</span>`,
+                html: `<span>${rcmail.get_label('roundcube_opencloud_plugin.attaching')}</span>`,
                 classname: 'uploading',
                 complete: false,
             });
@@ -290,13 +290,13 @@ function roundav_selector_dialog()
         }
     };
 
-    buttons[rcmail.gettext('roundav.cancel')] = function () {
-        roundav_dialog_close(this);
+    buttons[rcmail.gettext('roundcube_opencloud_plugin.cancel')] = function () {
+        roundcube_opencloud_plugin_dialog_close(this);
     };
 
     // show dialog window
-    roundav_dialog_show(dialog, {
-        title: rcmail.gettext('roundav.selectfiles'),
+    roundcube_opencloud_plugin_dialog_show(dialog, {
+        title: rcmail.gettext('roundcube_opencloud_plugin.selectfiles'),
         buttons: buttons,
         button_classes: ['mainaction'],
         minWidth: 500,
@@ -314,26 +314,26 @@ function roundav_selector_dialog()
     }
 }
 
-function roundav_attach_menu_open(p)
+function roundcube_opencloud_plugin_attach_menu_open(p)
 {
     if (!p || !p.props || p.props.menu != 'attachmentmenu') { return; }
 
     var id = p.props.id;
 
     $('#attachmenusaveas').unbind('click').attr('onclick', '').click(function (e) {
-        return roundav_directory_selector_dialog(id);
+        return roundcube_opencloud_plugin_directory_selector_dialog(id);
     });
 }
 
 // folder creation dialog
-function roundav_folder_create_dialog()
+function roundcube_opencloud_plugin_folder_create_dialog()
 {
     var dialog = $('#files-folder-create-dialog'),
         buttons = {},
         select = $('select[name="parent"]', dialog).html(''),
         input = $('input[name="name"]', dialog).val('');
 
-    buttons[rcmail.gettext('roundav.create')] = function () {
+    buttons[rcmail.gettext('roundcube_opencloud_plugin.create')] = function () {
         var folder = '', name = input.val(), parent = select.val();
 
         if (!name) { return; }
@@ -343,22 +343,22 @@ function roundav_folder_create_dialog()
         folder += name;
 
         file_api.folder_create(folder);
-        roundav_dialog_close(this);
+        roundcube_opencloud_plugin_dialog_close(this);
     };
 
-    buttons[rcmail.gettext('roundav.cancel')] = function () {
-        roundav_dialog_close(this);
+    buttons[rcmail.gettext('roundcube_opencloud_plugin.cancel')] = function () {
+        roundcube_opencloud_plugin_dialog_close(this);
     };
 
     // show dialog window
-    roundav_dialog_show(dialog, {
-        title: rcmail.gettext('roundav.foldercreate'),
+    roundcube_opencloud_plugin_dialog_show(dialog, {
+        title: rcmail.gettext('roundcube_opencloud_plugin.foldercreate'),
         buttons: buttons,
         button_classes: ['mainaction'],
     });
 
     // Fix submitting form with Enter
-    $('form', dialog).submit(roundav_dialog_submit_handler);
+    $('form', dialog).submit(roundcube_opencloud_plugin_dialog_submit_handler);
 
     // build parent selector
     select.append($('<option>').val('').text('---'));
@@ -374,7 +374,7 @@ function roundav_folder_create_dialog()
 }
 
 // folder edit dialog
-function roundav_folder_edit_dialog()
+function roundcube_opencloud_plugin_folder_edit_dialog()
 {
     var dialog = $('#files-folder-edit-dialog'),
         buttons = {}, options = [],
@@ -385,7 +385,7 @@ function roundav_folder_edit_dialog()
         select = $('select[name="parent"]', dialog).html(''),
         input = $('input[name="name"]', dialog).val(folder);
 
-    buttons[rcmail.gettext('roundav.save')] = function () {
+    buttons[rcmail.gettext('roundcube_opencloud_plugin.save')] = function () {
         var folder = '', name = input.val(), parent = select.val();
 
         if (!name) { return; }
@@ -395,22 +395,22 @@ function roundav_folder_edit_dialog()
         folder += name;
 
         file_api.folder_rename(file_api.env.folder, folder);
-        roundav_dialog_close(this);
+        roundcube_opencloud_plugin_dialog_close(this);
     };
 
-    buttons[rcmail.gettext('roundav.cancel')] = function () {
-        roundav_dialog_close(this);
+    buttons[rcmail.gettext('roundcube_opencloud_plugin.cancel')] = function () {
+        roundcube_opencloud_plugin_dialog_close(this);
     };
 
     // show dialog window
-    roundav_dialog_show(dialog, {
-        title: rcmail.gettext('roundav.folderedit'),
+    roundcube_opencloud_plugin_dialog_show(dialog, {
+        title: rcmail.gettext('roundcube_opencloud_plugin.folderedit'),
         buttons: buttons,
         button_classes: ['mainaction'],
     });
 
     // Fix submitting form with Enter
-    $('form', dialog).submit(roundav_dialog_submit_handler);
+    $('form', dialog).submit(roundcube_opencloud_plugin_dialog_submit_handler);
 
     // build parent selector
     options.push($('<option>').val('').text('---'));
@@ -426,13 +426,13 @@ function roundav_folder_edit_dialog()
 }
 
 // folder mounting dialog
-function roundav_folder_mount_dialog()
+function roundcube_opencloud_plugin_folder_mount_dialog()
 {
-    var args = { buttons: {}, title: rcmail.gettext('roundav.foldermount') },
+    var args = { buttons: {}, title: rcmail.gettext('roundcube_opencloud_plugin.foldermount') },
         dialog = $('#files-folder-mount-dialog'),
         input = $('#folder-mount-name').val('');
 
-    args.buttons[rcmail.gettext('roundav.save')] = function () {
+    args.buttons[rcmail.gettext('roundcube_opencloud_plugin.save')] = function () {
         var args = {}, folder = input.val(),
             driver = $('input[name="driver"]:checked', dialog).val();
 
@@ -452,11 +452,11 @@ function roundav_folder_mount_dialog()
         });
 
         file_api.folder_mount(args);
-        roundav_dialog_close(this);
+        roundcube_opencloud_plugin_dialog_close(this);
     };
 
-    args.buttons[rcmail.gettext('roundav.cancel')] = function () {
-        roundav_dialog_close(this);
+    args.buttons[rcmail.gettext('roundcube_opencloud_plugin.cancel')] = function () {
+        roundcube_opencloud_plugin_dialog_close(this);
     };
 
     // close folderoption menu
@@ -479,20 +479,20 @@ function roundav_folder_mount_dialog()
     args.button_classes = ['mainaction'];
 
     // show dialog window
-    roundav_dialog_show(dialog, args, function () {
+    roundcube_opencloud_plugin_dialog_show(dialog, args, function () {
         $('td.source:first', dialog).click();
         input.focus();
     });
 }
 
 // file edition dialog
-function roundav_file_edit_dialog(file)
+function roundcube_opencloud_plugin_file_edit_dialog(file)
 {
     var dialog = $('#files-file-edit-dialog'),
         buttons = {}, name = file_api.file_name(file);
     input = $('input[name="name"]', dialog).val(name);
 
-    buttons[rcmail.gettext('roundav.save')] = function () {
+    buttons[rcmail.gettext('roundcube_opencloud_plugin.save')] = function () {
         var folder = file_api.file_path(file), name = input.val();
 
         if (!name) { return; }
@@ -501,24 +501,24 @@ function roundav_file_edit_dialog(file)
 
         // @TODO: now we only update filename
         if (name != file) { file_api.file_rename(file, name); }
-        roundav_dialog_close(this);
+        roundcube_opencloud_plugin_dialog_close(this);
     };
-    buttons[rcmail.gettext('roundav.cancel')] = function () {
-        roundav_dialog_close(this);
+    buttons[rcmail.gettext('roundcube_opencloud_plugin.cancel')] = function () {
+        roundcube_opencloud_plugin_dialog_close(this);
     };
 
     // Fix submitting form with Enter
-    $('form', dialog).submit(roundav_dialog_submit_handler);
+    $('form', dialog).submit(roundcube_opencloud_plugin_dialog_submit_handler);
 
     // show dialog window
-    roundav_dialog_show(dialog, {
-        title: rcmail.gettext('roundav.fileedit'),
+    roundcube_opencloud_plugin_dialog_show(dialog, {
+        title: rcmail.gettext('roundcube_opencloud_plugin.fileedit'),
         buttons: buttons,
         button_classes: ['mainaction'],
     });
 }
 
-function roundav_dialog_show(content, params, onopen)
+function roundcube_opencloud_plugin_dialog_show(content, params, onopen)
 {
     params = $.extend({
         modal: true,
@@ -561,25 +561,25 @@ function roundav_dialog_show(content, params, onopen)
 }
 
 // Handle form submit with Enter key, click first dialog button instead
-function roundav_dialog_submit_handler()
+function roundcube_opencloud_plugin_dialog_submit_handler()
 {
     $(this).parents('.ui-dialog').find('.ui-button').first().click();
     return false;
 }
 
 // Hides dialog
-function roundav_dialog_close(dialog)
+function roundcube_opencloud_plugin_dialog_close(dialog)
 {
     (rcmail.is_framed() ? window.parent : window).$(dialog).dialog('close');
 }
 
-function roundav_folder_force_reload()
+function roundcube_opencloud_plugin_folder_force_reload()
 {
     file_api.folder_list(true);
 }
 
 // smart upload button
-function roundav_upload_input(button)
+function roundcube_opencloud_plugin_upload_input(button)
 {
     var link = $(button),
         file = $('<input>'),
@@ -637,7 +637,7 @@ function roundav_upload_input(button)
 
 // for reordering column array (Konqueror workaround)
 // and for setting some message list global variables
-roundav_list_coltypes = function ()
+roundcube_opencloud_plugin_list_coltypes = function ()
 {
     var n, list = rcmail.file_list;
 
@@ -651,7 +651,7 @@ roundav_list_coltypes = function ()
     list.init_header();
 };
 
-roundav_set_list_options = function (cols, sort_col, sort_order)
+roundcube_opencloud_plugin_set_list_options = function (cols, sort_col, sort_order)
 {
     var update = 0, i, idx, name, newcols = [], oldcols = rcmail.env.coltypes;
 
@@ -684,14 +684,14 @@ roundav_set_list_options = function (cols, sort_col, sort_order)
     if (update == 1) { rcmail.command('files-list', { sort: sort_col, reverse: sort_order == 'DESC' }); }
     else if (update) {
         rcmail.http_post('files/prefs', {
-            roundav_list_cols: oldcols,
-            roundav_sort_col: sort_col,
-            roundav_sort_order: sort_order,
+            roundcube_opencloud_plugin_list_cols: oldcols,
+            roundcube_opencloud_plugin_sort_col: sort_col,
+            roundcube_opencloud_plugin_sort_order: sort_order,
         }, rcmail.set_busy(true, 'loading'));
     }
 };
 
-roundav_set_coltypes = function (list)
+roundcube_opencloud_plugin_set_coltypes = function (list)
 {
     var i, found, name, cols = list.list.tHead.rows[0].cells;
 
@@ -706,15 +706,15 @@ roundav_set_coltypes = function (list)
     //    rcmail.env.subject_col = found;
     rcmail.env.subject_col = list.subject_col;
 
-    rcmail.http_post('files/prefs', { roundav_list_cols: rcmail.env.coltypes });
+    rcmail.http_post('files/prefs', { roundcube_opencloud_plugin_list_cols: rcmail.env.coltypes });
 };
 
-roundav_list_dblclick = function (list)
+roundcube_opencloud_plugin_list_dblclick = function (list)
 {
     rcmail.command('files-open');
 };
 
-roundav_list_select = function (list)
+roundcube_opencloud_plugin_list_select = function (list)
 {
     var selected = list.selection.length;
 
@@ -735,7 +735,7 @@ roundav_list_select = function (list)
     /*
     ) {
 //      caps = this.browser_capabilities().join();
-      href = '?' + $.param({_task: 'roundav', _action: 'open', file: file, viewer: viewer == 2 ? 1 : 0});
+      href = '?' + $.param({_task: 'roundcube_opencloud_plugin', _action: 'open', file: file, viewer: viewer == 2 ? 1 : 0});
       var win = window.open(href, rcmail.html_identifier('rcubefile'+file));
       if (win)
         setTimeout(function() { win.focus(); }, 10);
@@ -744,7 +744,7 @@ roundav_list_select = function (list)
     rcmail.enable_command('files-open', rcmail.env.viewer);
 };
 
-roundav_list_keypress = function (list)
+roundcube_opencloud_plugin_list_keypress = function (list)
 {
     if (list.modkey == CONTROL_KEY) { return; }
 
@@ -752,7 +752,7 @@ roundav_list_keypress = function (list)
     else if (list.key_pressed == list.DELETE_KEY || list.key_pressed == list.BACKSPACE_KEY) { rcmail.command('files-delete'); }
 };
 
-roundav_drag_end = function (e)
+roundcube_opencloud_plugin_drag_end = function (e)
 {
     var folder = $('#files-folder-list li.droptarget').removeClass('droptarget');
 
@@ -773,7 +773,7 @@ roundav_drag_end = function (e)
     }
 };
 
-roundav_drag_menu_action = function (command)
+roundcube_opencloud_plugin_drag_menu_action = function (command)
 {
     var menu = rcmail.gui_objects.file_dragmenu;
 
@@ -782,7 +782,7 @@ roundav_drag_menu_action = function (command)
     rcmail.command(command, rcmail.env.drag_target);
 };
 
-roundav_selected = function ()
+roundcube_opencloud_plugin_selected = function ()
 {
     var files = [];
     $.each(rcmail.file_list.get_selection(), function (i, v) {
@@ -794,7 +794,7 @@ roundav_selected = function ()
     return files;
 };
 
-roundav_frame_load = function (frame)
+roundcube_opencloud_plugin_frame_load = function (frame)
 {
     var win = frame.contentWindow;
 
@@ -813,7 +813,7 @@ roundav_frame_load = function (frame)
 };
 
 // activate html5 file drop feature (if browser supports it)
-roundav_drag_drop_init = function (container)
+roundcube_opencloud_plugin_drag_drop_init = function (container)
 {
     if (!window.FormData && !(window.XMLHttpRequest && XMLHttpRequest.prototype && XMLHttpRequest.prototype.sendAsBinary)) {
         return;
@@ -829,20 +829,20 @@ roundav_drag_drop_init = function (container)
     });
 
     container.bind('dragover dragleave', function (e) {
-        return roundav_drag_hover(e);
+        return roundcube_opencloud_plugin_drag_hover(e);
     });
     container.children('div').bind('dragover dragleave', function (e) {
-        return roundav_drag_hover(e);
+        return roundcube_opencloud_plugin_drag_hover(e);
     });
     container.get(0).addEventListener('drop', function (e) {
         // abort event and reset UI
-        roundav_drag_hover(e);
+        roundcube_opencloud_plugin_drag_hover(e);
         return file_api.file_drop(e);
     }, false);
 };
 
 // handler for drag/drop on element
-roundav_drag_hover = function (e)
+roundcube_opencloud_plugin_drag_hover = function (e)
 {
     if (!file_api.env.folder) { return; }
 
@@ -857,7 +857,7 @@ roundav_drag_hover = function (e)
 };
 
 // returns localized file size
-roundav_file_size = function (size)
+roundcube_opencloud_plugin_file_size = function (size)
 {
     var i, units = ['GB', 'MB', 'KB', 'B'];
 
@@ -868,7 +868,7 @@ roundav_file_size = function (size)
     return size;
 };
 
-roundav_progress_str = function (param)
+roundcube_opencloud_plugin_progress_str = function (param)
 {
     var current, total = file_api.file_size(param.total).toUpperCase();
 
@@ -877,7 +877,7 @@ roundav_progress_str = function (param)
     else if (total.indexOf('KB') > 0) { current = parseInt(param.current / 1024); }
     else { current = param.current; }
 
-    total = roundav_file_size(param.total);
+    total = roundcube_opencloud_plugin_file_size(param.total);
 
     return rcmail.gettext('uploadprogress')
         .replace(/\$percent/, param.percent + '%')
@@ -901,7 +901,7 @@ rcube_webmail.prototype.files_sort = function (props)
     // set table header and update env
     this.set_list_sorting(sort_col, sort_order);
 
-    this.http_post('files/prefs', { roundav_sort_col: sort_col, roundav_sort_order: sort_order });
+    this.http_post('files/prefs', { roundcube_opencloud_plugin_sort_col: sort_col, roundcube_opencloud_plugin_sort_order: sort_order });
 
     params.sort = sort_col;
     params.reverse = sort_order == 'DESC';
@@ -926,26 +926,26 @@ rcube_webmail.prototype.files_search_reset = function ()
 
 rcube_webmail.prototype.files_folder_delete = function ()
 {
-    if (confirm(this.get_label('roundav.folderdeleteconfirm'))) { file_api.folder_delete(file_api.env.folder); }
+    if (confirm(this.get_label('roundcube_opencloud_plugin.folderdeleteconfirm'))) { file_api.folder_delete(file_api.env.folder); }
 };
 
 rcube_webmail.prototype.files_delete = function ()
 {
-    if (!confirm(this.get_label('roundav.filedeleteconfirm'))) { return; }
+    if (!confirm(this.get_label('roundcube_opencloud_plugin.filedeleteconfirm'))) { return; }
 
-    var files = this.env.file ? [this.env.file] : roundav_selected();
+    var files = this.env.file ? [this.env.file] : roundcube_opencloud_plugin_selected();
     file_api.file_delete(files);
 };
 
 rcube_webmail.prototype.files_move = function (folder)
 {
-    var files = roundav_selected();
+    var files = roundcube_opencloud_plugin_selected();
     file_api.file_move(files, folder);
 };
 
 rcube_webmail.prototype.files_copy = function (folder)
 {
-    var files = roundav_selected();
+    var files = roundcube_opencloud_plugin_selected();
     file_api.file_copy(files, folder);
 };
 
@@ -966,20 +966,20 @@ rcube_webmail.prototype.files_list_update = function (head)
 
     list.clear();
     $('thead', list.fixed_header ? list.fixed_header : list.list).html(head);
-    roundav_list_coltypes();
+    roundcube_opencloud_plugin_list_coltypes();
     file_api.file_list();
 };
 
 rcube_webmail.prototype.files_get = function ()
 {
-    var files = this.env.file ? [this.env.file] : roundav_selected();
+    var files = this.env.file ? [this.env.file] : roundcube_opencloud_plugin_selected();
 
     if (files.length == 1) { file_api.file_get(files[0], { 'force-download': true }); }
 };
 
 rcube_webmail.prototype.files_open = function ()
 {
-    var files = roundav_selected();
+    var files = roundcube_opencloud_plugin_selected();
 
     if (files.length == 1) { file_api.file_open(files[0], rcmail.env.viewer); }
 };
@@ -1058,17 +1058,17 @@ rcube_webmail.prototype.files_set_quota = function (p)
 
 rcube_webmail.prototype.folder_create = function ()
 {
-    roundav_folder_create_dialog();
+    roundcube_opencloud_plugin_folder_create_dialog();
 };
 
 rcube_webmail.prototype.folder_rename = function ()
 {
-    roundav_folder_edit_dialog();
+    roundcube_opencloud_plugin_folder_edit_dialog();
 };
 
 rcube_webmail.prototype.folder_mount = function ()
 {
-    roundav_folder_mount_dialog();
+    roundcube_opencloud_plugin_folder_mount_dialog();
 };
 
 
@@ -1076,7 +1076,7 @@ rcube_webmail.prototype.folder_mount = function ()
 /** *******          Files API handler            **********/
 /**********************************************************/
 
-function roundav_ui()
+function roundcube_opencloud_plugin_ui()
 {
     this.requests = {};
     this.uploads = [];
@@ -1165,7 +1165,7 @@ function roundav_ui()
         // add virtual collections
         $.each(collections, function (i, n) {
             var row = $(`<li id="folder-collection-${n}" tabindex="0" class="mailbox collection ${n}">
-                <span class="name">${rcmail.gettext(`roundav.collection_${n}`)}</span>
+                <span class="name">${rcmail.gettext(`roundcube_opencloud_plugin.collection_${n}`)}</span>
             </li>`);
 
             row.on('click', function () { file_api.folder_select(n, true); });
@@ -1262,7 +1262,7 @@ function roundav_ui()
     // folder create request
     this.folder_create = function (folder)
     {
-        this.req = this.set_busy(true, 'roundav.foldercreating');
+        this.req = this.set_busy(true, 'roundcube_opencloud_plugin.foldercreating');
         this.request('folder_create', { folder: folder }, 'folder_create_response');
     };
 
@@ -1271,7 +1271,7 @@ function roundav_ui()
     {
         if (!this.response(response)) { return; }
 
-        this.display_message('roundav.foldercreatenotice', 'confirmation');
+        this.display_message('roundcube_opencloud_plugin.foldercreatenotice', 'confirmation');
 
         // refresh folders list
         this.folder_list();
@@ -1283,7 +1283,7 @@ function roundav_ui()
         if (folder == new_name) { return; }
 
         this.env.folder_rename = new_name;
-        this.req = this.set_busy(true, 'roundav.folderupdating');
+        this.req = this.set_busy(true, 'roundcube_opencloud_plugin.folderupdating');
         this.request('folder_move', { folder: folder, new: new_name }, 'folder_rename_response');
     };
 
@@ -1292,7 +1292,7 @@ function roundav_ui()
     {
         if (!this.response(response)) { return; }
 
-        this.display_message('roundav.folderupdatenotice', 'confirmation');
+        this.display_message('roundcube_opencloud_plugin.folderupdatenotice', 'confirmation');
 
         // refresh folders and files list
         this.env.folder = this.env.folder_rename;
@@ -1302,7 +1302,7 @@ function roundav_ui()
     // folder mount (external storage) request
     this.folder_mount = function (data)
     {
-        this.req = this.set_busy(true, 'roundav.foldermounting');
+        this.req = this.set_busy(true, 'roundcube_opencloud_plugin.foldermounting');
         this.request('folder_create', data, 'folder_mount_response');
     };
 
@@ -1311,7 +1311,7 @@ function roundav_ui()
     {
         if (!this.response(response)) { return; }
 
-        this.display_message('roundav.foldermountnotice', 'confirmation');
+        this.display_message('roundcube_opencloud_plugin.foldermountnotice', 'confirmation');
 
         // refresh folders list
         this.folder_list(true);
@@ -1320,7 +1320,7 @@ function roundav_ui()
     // folder delete request
     this.folder_delete = function (folder)
     {
-        this.req = this.set_busy(true, 'roundav.folderdeleting');
+        this.req = this.set_busy(true, 'roundcube_opencloud_plugin.folderdeleting');
         this.request('folder_delete', { folder: folder }, 'folder_delete_response');
     };
 
@@ -1331,7 +1331,7 @@ function roundav_ui()
 
         this.env.folder = null;
         rcmail.enable_command('files-folder-delete', 'folder-rename', 'files-list', false);
-        this.display_message('roundav.folderdeletenotice', 'confirmation');
+        this.display_message('roundcube_opencloud_plugin.folderdeletenotice', 'confirmation');
 
         // refresh folders list
         this.folder_list(true);
@@ -1562,7 +1562,7 @@ function roundav_ui()
             .attr({ id: 'rcmrow' + index, 'data-file': file, 'data-type': data.type });
 
         $('td.options > span', row).click(function (e) {
-            roundav_file_edit_dialog(file);
+            roundcube_opencloud_plugin_file_edit_dialog(file);
         });
 
         // collection (or search) lists files from all folders
@@ -1599,7 +1599,7 @@ function roundav_ui()
     // file(s) delete request
     this.file_delete = function (files)
     {
-        this.req = this.set_busy(true, 'roundav.filedeleting');
+        this.req = this.set_busy(true, 'roundcube_opencloud_plugin.filedeleting');
         this.request('file_delete', { file: files }, 'file_delete_response');
     };
 
@@ -1610,7 +1610,7 @@ function roundav_ui()
 
         var rco, dir, self = this;
 
-        this.display_message('roundav.filedeletenotice', 'confirmation');
+        this.display_message('roundcube_opencloud_plugin.filedeletenotice', 'confirmation');
 
         if (rcmail.env.file) {
             rco = rcmail.opener();
@@ -1646,7 +1646,7 @@ function roundav_ui()
 
         if (!count) { return; }
 
-        this.req = this.set_busy(true, 'roundav.filemoving');
+        this.req = this.set_busy(true, 'roundcube_opencloud_plugin.filemoving');
         this.request('file_move', { file: list }, 'file_move_response');
     };
 
@@ -1657,7 +1657,7 @@ function roundav_ui()
 
         if (response.result && response.result.already_exist && response.result.already_exist.length) { this.file_move_ask_user(response.result.already_exist, true); }
         else {
-            this.display_message('roundav.filemovenotice', 'confirmation');
+            this.display_message('roundcube_opencloud_plugin.filemovenotice', 'confirmation');
             this.file_list();
         }
     };
@@ -1680,7 +1680,7 @@ function roundav_ui()
 
         if (!count) { return; }
 
-        this.req = this.set_busy(true, 'roundav.filecopying');
+        this.req = this.set_busy(true, 'roundcube_opencloud_plugin.filecopying');
         this.request('file_copy', { file: list }, 'file_copy_response');
     };
 
@@ -1691,7 +1691,7 @@ function roundav_ui()
 
         if (response.result && response.result.already_exist && response.result.already_exist.length) { this.file_move_ask_user(response.result.already_exist); }
         else {
-            this.display_message('roundav.filecopynotice', 'confirmation');
+            this.display_message('roundcube_opencloud_plugin.filecopynotice', 'confirmation');
             this.quota();
         }
     };
@@ -1702,10 +1702,10 @@ function roundav_ui()
     this.file_move_ask_user = function (list, move)
     {
         var file = list[0], buttons = {},
-            text = rcmail.gettext('roundav.filemoveconfirm').replace('$file', file.dst);
+            text = rcmail.gettext('roundcube_opencloud_plugin.filemoveconfirm').replace('$file', file.dst);
         dialog = $('<div></div>');
 
-        buttons[rcmail.gettext('roundav.fileoverwrite')] = function () {
+        buttons[rcmail.gettext('roundcube_opencloud_plugin.fileoverwrite')] = function () {
             var file = list.shift(), f = {},
                 action = move ? 'file_move' : 'file_copy';
 
@@ -1713,16 +1713,16 @@ function roundav_ui()
             file_api.file_move_ask_list = list;
             file_api.file_move_ask_mode = move;
             dialog.dialog('destroy').remove();
-            file_api.req = file_api.set_busy(true, move ? 'roundav.filemoving' : 'roundav.filecopying');
+            file_api.req = file_api.set_busy(true, move ? 'roundcube_opencloud_plugin.filemoving' : 'roundcube_opencloud_plugin.filecopying');
             file_api.request(action, { file: f, overwrite: 1 }, 'file_move_ask_user_response');
         };
 
-        if (list.length > 1) { buttons[rcmail.gettext('roundav.fileoverwriteall')] = function () {
+        if (list.length > 1) { buttons[rcmail.gettext('roundcube_opencloud_plugin.fileoverwriteall')] = function () {
             var f = {}, action = move ? 'file_move' : 'file_copy';
 
             $.each(list, function () { f[this.src] = this.dst; });
             dialog.dialog('destroy').remove();
-            file_api.req = file_api.set_busy(true, move ? 'roundav.filemoving' : 'roundav.filecopying');
+            file_api.req = file_api.set_busy(true, move ? 'roundcube_opencloud_plugin.filemoving' : 'roundcube_opencloud_plugin.filecopying');
             file_api.request(action, { file: f, overwrite: 1 }, action + '_response');
         }; }
 
@@ -1734,15 +1734,15 @@ function roundav_ui()
             else if (move) { file_api.file_list(); }
         };
 
-        buttons[rcmail.gettext('roundav.fileskip')] = skip_func;
+        buttons[rcmail.gettext('roundcube_opencloud_plugin.fileskip')] = skip_func;
 
-        if (list.length > 1) { buttons[rcmail.gettext('roundav.fileskipall')] = function () {
+        if (list.length > 1) { buttons[rcmail.gettext('roundcube_opencloud_plugin.fileskipall')] = function () {
             dialog.dialog('destroy').remove();
             if (move) { file_api.file_list(); }
         }; }
 
         // open jquery UI dialog
-        roundav_dialog_show(dialog.html(text), {
+        roundcube_opencloud_plugin_dialog_show(dialog.html(text), {
             close: skip_func,
             buttons: buttons,
             minWidth: 400,
@@ -1759,7 +1759,7 @@ function roundav_ui()
 
         if (list && list.length) { this.file_move_ask_user(list, mode); }
         else {
-            this.display_message('roundav.file' + (move ? 'move' : 'copy') + 'notice', 'confirmation');
+            this.display_message('roundcube_opencloud_plugin.file' + (move ? 'move' : 'copy') + 'notice', 'confirmation');
             if (move) { this.file_list(); }
         }
     };
@@ -1767,7 +1767,7 @@ function roundav_ui()
     // file(s) rename request
     this.file_rename = function (oldfile, newfile)
     {
-        this.req = this.set_busy(true, 'roundav.fileupdating');
+        this.req = this.set_busy(true, 'roundcube_opencloud_plugin.fileupdating');
         this.request('file_move', { file: oldfile, new: newfile }, 'file_rename_response');
     };
 
@@ -1830,7 +1830,7 @@ function roundav_ui()
             for (i = 0; i < files.length; i++) { size += files[i].size || files[i].fileSize; }
 
             if (size > maxsize) {
-                alert(rcmail.get_label('roundav.uploadsizeerror').replace('$size', roundav_file_size(maxsize)));
+                alert(rcmail.get_label('roundcube_opencloud_plugin.uploadsizeerror').replace('$size', roundcube_opencloud_plugin_file_size(maxsize)));
                 return false;
             }
         }
@@ -2008,7 +2008,7 @@ function roundav_ui()
         if (param.total) {
             param.name = param.id;
 
-            if (!param.done) { param.text = roundav_progress_str(param); }
+            if (!param.done) { param.text = roundcube_opencloud_plugin_progress_str(param); }
 
             rcmail.display_progress(param);
         }
@@ -2029,7 +2029,7 @@ function roundav_ui()
     this.file_open = function (file, viewer)
     {
         var href = '?' + $.param({
-            _task: 'roundav', _action: 'open', file: file, viewer: viewer == 2 ? 1 : 0,
+            _task: 'roundcube_opencloud_plugin', _action: 'open', file: file, viewer: viewer == 2 ? 1 : 0,
         });
         rcmail.open_window(href, false, true);
     };
@@ -2088,7 +2088,7 @@ function roundav_ui()
         dialog.find('table.propform').remove();
         $('.auth-options', dialog).before(content);
 
-        args.buttons[this.t('roundav.save')] = function () {
+        args.buttons[this.t('roundcube_opencloud_plugin.save')] = function () {
             var data = { folder: label, list: 1 };
 
             $('input', dialog).each(function () {
@@ -2096,21 +2096,21 @@ function roundav_ui()
             });
 
             file_api.open_dialog = this;
-            file_api.req = file_api.set_busy(true, 'roundav.authenticating');
+            file_api.req = file_api.set_busy(true, 'roundcube_opencloud_plugin.authenticating');
             file_api.request('folder_auth', data, 'folder_auth_response');
         };
 
-        args.buttons[this.t('roundav.cancel')] = function () {
+        args.buttons[this.t('roundcube_opencloud_plugin.cancel')] = function () {
             delete file_api.auth_errors[label];
-            roundav_dialog_close(this);
+            roundcube_opencloud_plugin_dialog_close(this);
             // go to the next one
             file_api.folder_list_auth_errors();
         };
 
-        args.title = this.t('roundav.folderauthtitle').replace('$title', label);
+        args.title = this.t('roundcube_opencloud_plugin.folderauthtitle').replace('$title', label);
 
         // show dialog window
-        roundav_dialog_show(dialog, args, function () {
+        roundcube_opencloud_plugin_dialog_show(dialog, args, function () {
             // focus first empty input
             $('input', dialog).each(function () {
                 if (!this.value) {
@@ -2136,7 +2136,7 @@ function roundav_ui()
         }
 
         delete this.auth_errors[folder];
-        roundav_dialog_close(this.open_dialog);
+        roundcube_opencloud_plugin_dialog_close(this.open_dialog);
 
         // go to the next one
         this.folder_list_auth_errors();

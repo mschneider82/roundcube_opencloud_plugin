@@ -77,4 +77,11 @@ $labels['arialabelfilesavedialog'] = 'Speichern unter Fenster';
 $labels['arialabelfileprops'] = 'Dateieigenschaften';
 $labels['arialabelfilecontent'] = 'Dateiinhalt';
 
+$labels['settings_section'] = 'Cloud-Speicher';
+$labels['settings_username'] = 'Benutzername';
+$labels['settings_password'] = 'App-Passwort';
+$labels['settings_spaces_url'] = 'Spaces WebDAV-URL';
+$labels['settings_info'] = 'Zugangsdaten für OpenCloud: Erstellen Sie unter OpenCloud → Einstellungen → Sicherheit ein App-Passwort und tragen Sie es hier als Passwort ein. Die Spaces WebDAV-URL finden Sie, indem Sie unter OpenCloud → Einstellungen "WebDAV-Informationen in der Detailansicht anzeigen" aktivieren und dann die Ordner-Eigenschaften des gewünschten Space öffnen.';
+$labels['settings_saved'] = 'Cloud-Speicher-Einstellungen gespeichert.';
+$labels['no_credentials'] = 'Bitte konfigurieren Sie Ihre Cloud-Speicher-Zugangsdaten in den Einstellungen.';
 ?>
